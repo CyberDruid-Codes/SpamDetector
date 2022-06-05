@@ -75,26 +75,12 @@ def get_response(intents_list, intents_json):
 ##
 #Opens the email file and reads its contents
 content = sys.argv
-"""
-msg = email.message_from_file(open(content[1]))
-attachments=msg.get_payload()
-for attachment in attachments:
-    fnam=attachment.get_filename()
-    scantext=open(fnam, 'wb',encoding="cp437").write(attachment.get_payload(decode=True,))
-    scantext.close()
-"""
 scantext = open(content[1], "r",encoding="cp437") 
 content = scantext.read()
 scantext.close()
 #print(content)
 ##
-"""
-content = sys.argv
-if content[-4:] == ".eml":
-    pass
-else:
-    content = content + ".eml"
-"""
+
 ##
 
 ##
@@ -103,6 +89,8 @@ replaced_content = content.replace('[', '')
 replaced_content = replaced_content.replace(']','')
 replaced_content = replaced_content.replace('{','')
 replaced_content = replaced_content.replace('}','')
+replaced_content = replaced_content.replace('.',' ')
+replaced_content = replaced_content.replace(',',' ')
 scan_content = re.split(' ',replaced_content)
 ##
 
@@ -121,12 +109,14 @@ vulgarW = 0
 def dnnProcessing():
     for x in scan_content:
         global message
-        #if 'cpe' in x: 
+         
         message = x
-        ints = predict_class(message)
-        res = get_response(ints,intents)
-        #print(res)
-        interpret(res)
+        if message != '':
+            ints = predict_class(message)
+            res = get_response(ints,intents)
+            #print(message)
+            interpret(res)
+        
         message = " "
 ##
 
